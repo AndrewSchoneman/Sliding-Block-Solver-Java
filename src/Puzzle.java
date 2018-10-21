@@ -31,24 +31,45 @@ import java.util.*;
 	  solve(createPuzzle(sc1), createPuzzle(sc2)); 	  
   }
 
+  public static boolean isSolvable(int[] p) {
+	    int inversions = 0;
+	    
+	    for(int i = 0; i < p.length - 1; i++) {
+	      // Check if a larger number exists after the current
+	      // place in the array, if so increment inversions.
+	      for(int j = i + 1; j < p.length; j++)
+	        if(p[i] > p[j]) inversions++;
+
+	      // Determine if the distance of the blank space from the bottom 
+	      // right is even or odd, and increment inversions if it is odd.
+	      if(p[i] == 0 && i % 2 == 1) inversions++;
+	    }
+
+	    // If inversions is even, the puzzle is solvable.
+	    return (inversions % 2 == 0);
+	  }
+  
   public static int getHeuristic1(int[] puzzle, int[] solution) {
 	    int heuristic = 0;
 
 	    for(int i = 0; i < puzzle.length; i++) {
-	        heuristic += getManhattanDistance(findNum(puzzle, i), findNum(solution, i));
+	    //	System.out.println(getManhattanDistance(findNum(puzzle, i), findNum(solution, i)));
+	        if(puzzle[i] != 0) heuristic += getManhattanDistance(findNum(puzzle, i), findNum(solution, i));
 	    }
 	    return heuristic;
 	  }
   
-  public static int getHeuristic(int[] puzzle, int[] solution) {
+  public static int getHeuristic(int[] array, int[] array2) {
 	    int heuristic = 0;
 
-	    for(int i = 0; i < puzzle.length; i++) {
-	        heuristic += getManhattanDistance(findNum(puzzle, i), findNum(solution, i));
+	    for(int i = 0; i < array.length; i++) {
+	      if (array[i] != 0)
+	   // 	  System.out.println(getManhattanDistance(i, array[i]));
+	        heuristic += getManhattanDistance(i, array[i]);
 	    }
 	    return heuristic;
-  }
-  
+	  }
+ 
   public static void canBeSolved(int[] puzzle, int[] solution) {
 	  int isSolveable = getHeuristic(puzzle, solution);
 	  if ( isSolveable % 2 != 0 && isSolveable > 1 ) {
@@ -56,12 +77,12 @@ import java.util.*;
 		  System.exit(0);
 	  }
   }
-  
+
   public static int getManhattanDistance(int index, int number) {
 	    return Math.abs((index / 3) - ((number-1) / 3)) + Math.abs((index % 3) - ((number-1) % 3));
 	  }
   
-  public static final PriorityQueue<PuzzleState> queue = new PriorityQueue<PuzzleState>(100, new Comparator<PuzzleState>() {
+  public static final PriorityQueue<PuzzleState> queue = new PriorityQueue<PuzzleState>(1000, new Comparator<PuzzleState>() {
 	    @Override
 	    public int compare(PuzzleState o1, PuzzleState o2) {
 	      return o1.f() - o2.f();
@@ -70,14 +91,13 @@ import java.util.*;
   
   public static void solve(int[] puzzle, int[] solution) {
 	//  canBeSolved(puzzle,solution); 
-	  System.out.println(Arrays.toString(puzzle) + " " + Arrays.toString(solution)); 
-	  PuzzleState inital = new PuzzleState(puzzle, solution); 
+	  System.out.println(isSolvable(puzzle)); 
 	  LinkedList<int[]> moves = Move.generateMoves(puzzle); 
 	  HashSet<PuzzleState> visited = new HashSet<PuzzleState>();
 	  PuzzleState currentState; 
 	  boolean solved  = false;
 	  for(int[] move : moves) {
-		  visited.add(new PuzzleState(move, solution, inital));
+		  visited.add(new PuzzleState(move, solution,  new PuzzleState(puzzle, solution)));
 	  }
 	  for(PuzzleState state : visited) {
 		  if(state.isSolved()) {
@@ -91,9 +111,10 @@ import java.util.*;
 	  LinkedList<PuzzleState> statesToAdd = new LinkedList<PuzzleState>();
 	  int count = 0; 
 	  while(!queue.isEmpty() && !solved) {
-		   
 		  count++; 
 		  currentState = queue.remove(); 
+		/*  if(currentState.getPuzzle()[0] != 5)*/ //System.out.println(Arrays.toString(currentState.getPuzzle()));
+		  if (currentState.isSolved()) System.out.println("found a solution");
 		  moves = Move.generateMoves(currentState.getPuzzle());
 		  for(int[] move : moves) {
 			  PuzzleState state = new PuzzleState(move, solution, currentState);
@@ -109,7 +130,7 @@ import java.util.*;
 		  if(solved) break; 
 		  for(PuzzleState state : statesToAdd) {
 			  if(!visited.contains(state)){
-				 
+				  if (state.isSolved()) System.out.println("found a solution");
 				  queue.add(state); 
 				  visited.add(state );
 			  }
@@ -126,7 +147,7 @@ import java.util.*;
   	   System.out.println("Argument must be the name of a file");
 
   	} else try {
-  		System.out.println(args[0] + " " + args[1]);
+
   		kickThingsOff(( new Scanner( new File( args[0] ) )) , ( new Scanner( new File( args[1] ) ) ) );
 
   	} catch (FileNotFoundException e) {

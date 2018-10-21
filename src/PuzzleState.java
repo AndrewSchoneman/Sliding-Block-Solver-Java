@@ -62,7 +62,7 @@ import java.util.Arrays;
     if (o == null || getClass() != o.getClass()) return false;
 
     PuzzleState state = (PuzzleState) o;
-    return Arrays.equals(puzzle, state.puzzle);
+    return Arrays.equals(this.puzzle, state.puzzle);
   }
   @Override
   public int hashCode() {

@@ -13,7 +13,7 @@ import java.util.LinkedList;
 	
 	public static boolean canMoveLeft(int[] puzzle) {
 		if(findZero(puzzle) == -1) return false; 
-		return findZero(puzzle) -1 > 0; 
+		return findZero(puzzle) -1 >= 0; 
 	}
 	
 	public static boolean canMoveRight(int[] puzzle) {
@@ -90,6 +90,4 @@ import java.util.LinkedList;
 		moves.add(moveDown(puzzle));
 		return moves; 
 	}
-
-
 }
