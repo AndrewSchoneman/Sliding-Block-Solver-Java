@@ -4,12 +4,25 @@ import java.util.Arrays;
  class PuzzleState {
   private int[] puzzle;
   private final int[] solvedState; 
-  private int start;
-  private int finish; 
-
+  private PuzzleState previousState; 
+  private static int[] solvedState1; 
+  private int g = 0; 
+  private int h; 
+  
   public PuzzleState(int[] state, int[] solvedState) {
 	  puzzle = state; 
 	  this.solvedState = solvedState; 
+	  this.previousState = null; 
+	  this.g= 0; 
+	  this.h = Puzzle.getHeuristic(this.puzzle, this.solvedState);
+  }
+  
+  public PuzzleState(int[] state, int[] solvedState, PuzzleState previousState) {
+	  puzzle = state; 
+	  this.solvedState = solvedState; 
+	  this.previousState = previousState; 
+	  this.g = previousState.g + 1; 
+	  this.h = Puzzle.getHeuristic(this.puzzle, solvedState);
   }
   
   public boolean isSolved() {
@@ -20,6 +33,28 @@ import java.util.Arrays;
 	  return this.puzzle; 
   }
   
+  public void sSolvedState(int[] solution) {
+	  PuzzleState.solvedState1 = solution; 
+  }
+  
+  public boolean isSolved1() {
+	  return Arrays.equals(this.puzzle, PuzzleState.solvedState1); 
+  }
+  
+  public int g() {
+	    return this.g;
+  }
+  public int h() {
+	    return this.h;
+	  }
+
+  public int f() {
+    return g() + h();
+  }
+
+  public PuzzleState getPrevious() {
+    return this.previousState;
+  }
   
   @Override
   public boolean equals(Object o) {
