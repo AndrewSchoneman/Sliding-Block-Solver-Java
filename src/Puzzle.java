@@ -89,11 +89,15 @@ import java.util.*;
 	    }
 	  });
   
-  public static void solve(int[] puzzle, int[] solution) {
+  public static void checkSolveable(int[] puzzle) {
 	  if(!isSolvable(puzzle)) {
 		  System.out.println("The puzzle:" + prettyPrint(puzzle) + "\n\nis not solveable");
 		  System.exit(0); 
 	  }
+  }
+  
+  public static void solve(int[] puzzle, int[] solution) {
+	  checkSolveable(puzzle);
 	  LinkedList<int[]> moves = Move.generateMoves(puzzle); 
 	  HashSet<PuzzleState> visited = new HashSet<PuzzleState>();
 	  PuzzleState currentState; 
