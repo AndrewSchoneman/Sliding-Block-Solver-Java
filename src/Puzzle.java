@@ -35,30 +35,14 @@ import java.util.*;
 	    return puz;
   }
   
-  public static void kickThingsOff(Scanner sc1, Scanner sc2) {
-	  int[] puzzle = createPuzzle(sc1); 
-	  if(!isSolvable(puzzle)) {
-		  System.out.println("The puzzle:" + prettyPrint(puzzle) + "\n\nis not solveable");
-		  System.exit(0); 
-	  }
-	  solve(puzzle, createPuzzle(sc2)); 	  
-  }
-
   public static boolean isSolvable(int[] p) {
-	    int inversions = 0;
-	    
+	    int inversions = 0;	    
 	    for(int i = 0; i < p.length - 1; i++) {
-	      // Check if a larger number exists after the current
-	      // place in the array, if so increment inversions.
+
 	      for(int j = i + 1; j < p.length; j++)
 	        if(p[i] > p[j]) inversions++;
-
-	      // Determine if the distance of the blank space from the bottom 
-	      // right is even or odd, and increment inversions if it is odd.
 	      if(p[i] == 0 && i % 2 == 1) inversions++;
 	    }
-
-	    // If inversions is even, the puzzle is solvable.
 	    return (inversions % 2 == 0);
 	  }
   
@@ -83,13 +67,7 @@ import java.util.*;
 	    return heuristic;
 	  }
  
-  public static void canBeSolved(int[] puzzle, int[] solution) {
-	  int isSolveable = getHeuristic(puzzle, solution);
-	  if ( isSolveable % 2 != 0 && isSolveable > 1 ) {
-		  System.out.println("Puzzle " + Arrays.toString(puzzle) + " not solveable");
-		  System.exit(0);
-	  }
-  }
+
   public static String prettyPrint(int[] puzzle) {
 	    int[] state = puzzle;
 	    String s = "\n\n";
@@ -112,7 +90,10 @@ import java.util.*;
 	  });
   
   public static void solve(int[] puzzle, int[] solution) {
-	  System.out.println(isSolvable(puzzle)); 
+	  if(!isSolvable(puzzle)) {
+		  System.out.println("The puzzle:" + prettyPrint(puzzle) + "\n\nis not solveable");
+		  System.exit(0); 
+	  }
 	  LinkedList<int[]> moves = Move.generateMoves(puzzle); 
 	  HashSet<PuzzleState> visited = new HashSet<PuzzleState>();
 	  PuzzleState currentState; 
@@ -162,7 +143,8 @@ import java.util.*;
  if (args.length != 2) {
   	   System.out.println("Argument must be the name of a file");
   	} else try {
-  		kickThingsOff(( new Scanner( new File( args[0] ) )) , ( new Scanner( new File( args[1] ) ) ) );
+  		solve((createPuzzle( new Scanner( new File( args[0] ) )) ) , 
+  				createPuzzle(( new Scanner( new File( args[1] ) ) ) ));
   	} catch (FileNotFoundException e) {
   	    System.out.println("File not found");
   	}
