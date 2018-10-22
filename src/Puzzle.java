@@ -1,6 +1,13 @@
 import java.io.*;
 import java.util.*;
 
+/*
+ * @toDo
+ * create a summation checker to check arbitrarily large inputs
+ * implement smart search for all inputs and solutions
+ * create auto generator for arbitrarily large inputs
+ */
+
  public class Puzzle{
 
 	public static int findNum(int[] puzzle, int num) {
@@ -8,7 +15,7 @@ import java.util.*;
 			if(puzzle[i] == num) return i; 
 		}
 		return -1; 
-	}	 
+	}
 	 
   public static int[] createPuzzle(Scanner sc){
 	    int[] puz = new int[9];
@@ -26,9 +33,15 @@ import java.util.*;
 	    }
 	    if(sum != 36) System.exit(-1);
 	    return puz;
-	  }
+  }
+  
   public static void kickThingsOff(Scanner sc1, Scanner sc2) {
-	  solve(createPuzzle(sc1), createPuzzle(sc2)); 	  
+	  int[] puzzle = createPuzzle(sc1); 
+	  if(!isSolvable(puzzle)) {
+		  System.out.println("The puzzle:" + prettyPrint(puzzle) + "\n\nis not solveable");
+		  System.exit(0); 
+	  }
+	  solve(puzzle, createPuzzle(sc2)); 	  
   }
 
   public static boolean isSolvable(int[] p) {
@@ -77,7 +90,16 @@ import java.util.*;
 		  System.exit(0);
 	  }
   }
-
+  public static String prettyPrint(int[] puzzle) {
+	    int[] state = puzzle;
+	    String s = "\n\n";
+	    for(int i = 0; i < state.length; i++) {
+	      if(i % 3 == 0 && i != 0) s += "\n";
+	      s += (state[i] != 0) ? String.format("%d ", state[i]) : "  ";
+		 }
+		    return s;
+  }
+  
   public static int getManhattanDistance(int index, int number) {
 	    return Math.abs((index / 3) - ((number-1) / 3)) + Math.abs((index % 3) - ((number-1) % 3));
 	  }
@@ -90,7 +112,6 @@ import java.util.*;
 	  });
   
   public static void solve(int[] puzzle, int[] solution) {
-	//  canBeSolved(puzzle,solution); 
 	  System.out.println(isSolvable(puzzle)); 
 	  LinkedList<int[]> moves = Move.generateMoves(puzzle); 
 	  HashSet<PuzzleState> visited = new HashSet<PuzzleState>();
@@ -113,19 +134,16 @@ import java.util.*;
 	  while(!queue.isEmpty() && !solved) {
 		  count++; 
 		  currentState = queue.remove(); 
-		/*  if(currentState.getPuzzle()[0] != 5)*/ //System.out.println(Arrays.toString(currentState.getPuzzle()));
-		  if (currentState.isSolved()) System.out.println("found a solution");
 		  moves = Move.generateMoves(currentState.getPuzzle());
 		  for(int[] move : moves) {
 			  PuzzleState state = new PuzzleState(move, solution, currentState);
 			  statesToAdd.add(state);
 			  if (state.isSolved()) {
 				  System.out.println("Found a solution to the puzzle " + 
-						  Arrays.toString(state.getPuzzle()) + " in "  + count + " moves" );
+						  prettyPrint(puzzle) + "\n\nin "  + count + " moves" );
 				  solved = true;  
 				  break; 
-			  }
-			 
+			  }		 
 		  }
 		  if(solved) break; 
 		  for(PuzzleState state : statesToAdd) {
@@ -137,19 +155,14 @@ import java.util.*;
 		  }
 		  statesToAdd.clear(); 
 	  }
-	  System.out.println(visited.size()); 
-	  if(queue.isEmpty()) System.out.println("No solution found in " + count + " moves"); 
   }
 
   public static void main(String[] args) {
 
  if (args.length != 2) {
   	   System.out.println("Argument must be the name of a file");
-
   	} else try {
-
   		kickThingsOff(( new Scanner( new File( args[0] ) )) , ( new Scanner( new File( args[1] ) ) ) );
-
   	} catch (FileNotFoundException e) {
   	    System.out.println("File not found");
   	}

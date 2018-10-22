@@ -57,6 +57,17 @@ import java.util.Arrays;
   }
   
   @Override
+  public String toString() {
+    int[] state = this.puzzle;
+    String s = "\n\n";
+    for(int i = 0; i < state.length; i++) {
+      if(i % 3 == 0 && i != 0) s += "\n";
+      s += (state[i] != 0) ? String.format("%d ", state[i]) : "  ";
+	 }
+	    return s;
+  }
+  
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;

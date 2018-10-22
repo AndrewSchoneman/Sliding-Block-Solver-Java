@@ -4,34 +4,34 @@ import java.util.LinkedList;
 
  class Move {
 	
-	public static int findZero(int[] puzzle) {
+	private static int findZero(int[] puzzle) {
 		for(int i = 0; i < puzzle.length; i++) {
 			if(puzzle[i] == 0) return i; 
 		}
 		return -1; 
 	}
 	
-	public static boolean canMoveLeft(int[] puzzle) {
+	private static boolean canMoveLeft(int[] puzzle) {
 		if(findZero(puzzle) == -1) return false; 
 		return findZero(puzzle) -1 >= 0; 
 	}
 	
-	public static boolean canMoveRight(int[] puzzle) {
+	private static boolean canMoveRight(int[] puzzle) {
 		if(findZero(puzzle) == -1) return false;
 		return findZero(puzzle) + 1 < puzzle.length; 
 	}
 
-	public static boolean canMoveDown(int[] puzzle) {
+	private static boolean canMoveDown(int[] puzzle) {
 		if(findZero(puzzle) == -1) return false;
 		return findZero(puzzle) +3 < puzzle.length; 
 	}
 
-	public static boolean canMoveUp(int[] puzzle) {
+	private static boolean canMoveUp(int[] puzzle) {
 		if(findZero(puzzle) == -1) return false;
 		return findZero(puzzle) -3 > 0; 
 	}
 	
-	public static int[] moveLeft(int[] puzzle) {
+	private static int[] moveLeft(int[] puzzle) {
 		int[] puzzleMove = Arrays.copyOf(puzzle, 9);
 		if(canMoveLeft(puzzleMove)) {		
 			int zeroIndex = findZero(puzzleMove);
@@ -43,7 +43,7 @@ import java.util.LinkedList;
 		return puzzle;
 	}
 		
-	public static int[] moveRight(int[] puzzle) {
+	private static int[] moveRight(int[] puzzle) {
 		int[] puzzleMove = Arrays.copyOf(puzzle, 9);
 		if(canMoveRight(puzzleMove)) {
 			int zeroIndex = findZero(puzzleMove);
@@ -56,7 +56,7 @@ import java.util.LinkedList;
 		return puzzle;
 	}
 	
-	public static int[] moveDown(int[] puzzle) {
+	private static int[] moveDown(int[] puzzle) {
 		int[] puzzleMove = Arrays.copyOf(puzzle, 9);
 		if(canMoveDown(puzzleMove)) {
 			int zeroIndex = findZero(puzzleMove);
@@ -69,7 +69,7 @@ import java.util.LinkedList;
 		return puzzle;
 	}
 	
-	public static int[] moveUp(int[] puzzle) {
+	private static int[] moveUp(int[] puzzle) {
 		int[] puzzleMove = Arrays.copyOf(puzzle, 9);
 		if(canMoveUp(puzzleMove)) {
 			int zeroIndex = findZero(puzzleMove);
