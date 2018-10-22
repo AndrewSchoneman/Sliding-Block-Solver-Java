@@ -98,47 +98,31 @@ import java.util.*;
   
   public static void solve(int[] puzzle, int[] solution) {
 	  checkSolveable(puzzle);
-	  LinkedList<int[]> moves = Move.generateMoves(puzzle); 
+	  LinkedList<int[]> moves; 
 	  HashSet<PuzzleState> visited = new HashSet<PuzzleState>();
-	  PuzzleState currentState; 
+	  PuzzleState currentState = new PuzzleState(puzzle, solution); 
+	  if(currentState.isSolved()) System.out.println("The puzzle is the same as the solution");
+	  visited.add(currentState);
+	  queue.add(currentState);
 	  boolean solved  = false;
-	  for(int[] move : moves) {
-		  visited.add(new PuzzleState(move, solution,  new PuzzleState(puzzle, solution)));
-	  }
-	  for(PuzzleState state : visited) {
-		  if(state.isSolved()) {
-			  System.out.println("Found a solution to the puzzle " + 
-					  Arrays.toString(state.getPuzzle()) + " in one move" );			  
-			  solved = true; 
-		  }
-		  queue.add(state);
-	  }
-	  moves.clear();
-	  LinkedList<PuzzleState> statesToAdd = new LinkedList<PuzzleState>();
 	  int count = 0; 
 	  while(!queue.isEmpty() && !solved) {
 		  count++; 
-		  currentState = queue.remove(); 
-		  moves = Move.generateMoves(currentState.getPuzzle());
+		  moves = Move.generateMoves(queue.remove().getPuzzle());
 		  for(int[] move : moves) {
 			  PuzzleState state = new PuzzleState(move, solution, currentState);
-			  statesToAdd.add(state);
 			  if (state.isSolved()) {
 				  System.out.println("Found a solution to the puzzle " + 
 						  prettyPrint(puzzle) + "\n\nin "  + count + " moves" );
 				  solved = true;  
 				  break; 
-			  }		 
-		  }
-		  if(solved) break; 
-		  for(PuzzleState state : statesToAdd) {
+			  }
 			  if(!visited.contains(state)){
-				  if (state.isSolved()) System.out.println("found a solution");
 				  queue.add(state); 
 				  visited.add(state );
-			  }
+			  }			  	 
 		  }
-		  statesToAdd.clear(); 
+		  if(solved) break; 		  
 	  }
   }
 
